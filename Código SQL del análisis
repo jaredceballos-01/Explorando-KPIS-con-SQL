@@ -1,0 +1,145 @@
+sql
+-- Exploración inicial: Se previsualizan los primeros 10 registros de las dimensiones y hechos para validar la carga de datos.
+-- Validación de llaves primarias y foráneas para joins: ClaveProducto, ClaveTerritorio e IDCampana.
+select * from campanas limit 10;
+select * from territorios limit 10;
+select * from productos_categorias limit 10;
+select * from productos limit 10;
+select * from ventas_2017 limit 10;
+
+
+-- Selección de campos base y normalización de dimensiones (Producto, Categoría y Territorio).
+Select 
+    v.numero_pedido, 
+    v.clave_producto, 
+    p.nombre_producto, 
+    pc.clave_categoria, 
+    -- Tratamiento de valores nulos en métricas financieras para asegurar integridad en cálculos posteriores.
+    COALESCE(p.precio_producto,0), 
+    COALESCE(v.cantidad_pedido,0), 
+    COALESCE(p.costo_producto,0),
+    t.pais, 
+    t.continente, 
+    v.clave_territorio
+from ventas_2017 as v
+left join productos as p on v.clave_producto = p.clave_producto
+left join productos_categorias as pc on p.clave_subcategoria = pc.clave_subcategoria
+left join territorios t on v.clave_territorio = t.clave_territorio;
+
+
+
+-- Consolidación de datos de ventas con enriquecimiento de categorías y geografía mediante Left Joins.
+SELECT
+    v.numero_pedido,
+    v.clave_producto,
+    p.nombre_producto,
+    pc.clave_categoria,
+    COALESCE(p.precio_producto, 0)  AS precio_producto,
+    COALESCE(v.cantidad_pedido, 0)  AS cantidad_pedido,
+    COALESCE(p.costo_producto, 0)   AS costo_producto,
+    (p.precio_producto * v.cantidad_pedido) as Ingreso_Total,
+    (p.costo_producto * v.cantidad_pedido) as Costo_Total,
+    t.pais,
+    t.continente,
+    v.clave_territorio
+-- Cálculo derivado a nivel de línea: Ingreso Total (Precio * Cantidad) y Costo Total (Costo * Cantidad).
+
+FROM ventas_2017 AS v
+JOIN productos AS p
+  ON v.clave_producto = p.clave_producto
+LEFT JOIN productos_categorias AS pc
+  ON p.clave_subcategoria = pc.clave_subcategoria
+LEFT JOIN territorios AS t
+  ON v.clave_territorio = t.clave_territorio;
+
+-- Resumen de desempeño financiero agrupado por entidad geográfica (País y Territorio).
+
+-- Conversión de tipos de datos a ENTERO para facilitar la lectura de reportes ejecutivos.
+
+-- Ordenamiento de resultados priorizando el volumen de ingresos de mayor a menor.
+SELECT
+pais, 
+    vc.clave_territorio,
+   SUM(vc.ingreso_total) ::integer as ingreso,
+SUM(vc.costo_total) ::integer as costo
+from ventas_clean vc
+Group by pais, clave_territorio
+order by ingreso desc;
+
+SELECT
+    v.pais,
+    v.clave_territorio,
+    SUM(v.ingreso_total)::integer AS ingresos,
+    SUM(v.costo_total)::integer  AS costos,
+    SUM(c.costo_campana::numeric)
+-- Integración de inversión publicitaria por territorio para análisis de rentabilidad.
+
+FROM ventas_clean AS v
+LEFT JOIN campanas AS c
+  ON v.clave_territorio = c.clave_territorio::integer
+GROUP BY
+    v.pais,
+    v.clave_territorio
+ORDER BY
+    ingresos DESC;
+
+
+ SELECT
+    p.pais,
+    p.clave_territorio,
+    SUM(p.ingresos)::integer AS ingresos,
+    SUM(p.costos)::integer AS costos,
+    COALESCE(SUM(c.costo_campana), 0)::integer AS costo_campana,
+
+-- Cálculo de Beneficio Bruto: Diferencia aritmética entre Ingresos Totales y Costos Totales de producto.
+    (SUM(p.ingresos::NUMERIC) - SUM(p.costos::NUMERIC))::INTEGER as beneficio_bruto,
+  
+
+-- Margen Porcentual: Proporción de utilidad sobre las ventas (evitando división por cero).
+
+ ((SUM(p.ingresos::NUMERIC) - SUM(p.costos::NUMERIC))*100)/NULLIF(sum(p.ingresos::numeric),0) as margen_pct,
+    
+     --   (SUM(p.ingresos::numeric) - SUM(p.costos::numeric)) / 
+       -- NULLIF(SUM(p.ingresos::numeric), 0) * 100 AS margen_pct,
+    
+
+-- ROI %: Retorno de inversión publicitaria calculado como utilidad neta sobre costo de campaña.    
+    
+    -- ROI %
+   
+        ((SUM(p.ingresos::numeric) - SUM(p.costos::numeric)) * 100) / 
+        NULLIF(SUM(c.costo_campana::numeric), 0) AS roi_pct
+
+FROM pais_ingreso_costo AS p
+LEFT JOIN pais_campanas AS c
+  ON p.clave_territorio = c.clave_territorio
+GROUP BY
+    p.pais,
+    p.clave_territorio
+ORDER BY
+    p.clave_territorio, ingresos, costos;
+
+
+
+
+
+-- Control de Calidad: Identificación de registros con valores nulos en dimensiones críticas de la tabla de ventas.
+-- Auditoría de nulidad para numero_pedido, clave_producto y clave_territorio.
+SELECT 
+    SUM(CASE WHEN numero_pedido IS NULL THEN 1 ELSE 0 END) AS nulos_pedido,
+    SUM(CASE WHEN clave_producto IS NULL THEN 1 ELSE 0 END) AS nulos_producto,
+    SUM(CASE WHEN clave_territorio IS NULL THEN 1 ELSE 0 END) AS nulos_territorio
+FROM ventas_2017;
+
+-- Control de Calidad: Detección de anomalías en cantidades (valores nulos, negativos o cero).
+SELECT 
+ --   SUM(CASE WHEN cantidad_pedido IS NULL THEN 1 ELSE 0 END) AS cantidad_nula,
+    count(CASE 
+            WHEN cantidad_pedido IS NULL OR cantidad_pedido <= 0 THEN 1 
+          END) AS filas_cantidad_no_valida
+FROM ventas_2017
+    ;
+-- Control de Calidad: Validación de integridad de precios en el catálogo de productos.
+SELECT 
+   count(CASE WHEN precio_producto IS NULL or precio_producto<=0 then 1 END) AS productos_precio_no_valido
+FROM productos;
