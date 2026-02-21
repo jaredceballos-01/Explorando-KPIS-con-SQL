@@ -1,0 +1,32 @@
+,,,,,,,,,,
+,Pais,ClaveTerritorio,ingresos,costos,CostoCampanas,BeneficioBruto,Margen_pct,ROI_pct,,INSIGHT C F I
+,United States,1,"$3,353,939.92","$1,899,471.33","$1,920,000.00","$1,454,468.60",43.37%,75.75%,,Contexto:
+,Australia,9,"$2,532,003.49","$1,474,958.18","$2,150,400.00","$1,057,045.31",41.75%,49.16%,,"Se evaluó la rentabilidad geográfica del negocio mediante las ventas de 2017 y la eficiencia del margen bruto por producto. El mapeo del desempeño por país permitió segmentar el éxito comercial por ubicación, lo que finalmente sirvió para determinar el ROI basado en el gasto publicitario."
+,United Kingdom,10,"$1,189,636.78","$681,508.55","$2,304,000.00","$508,128.24",42.71%,22.05%,,
+,Germany,8,"$1,071,460.42","$611,295.36","$2,265,600.00","$460,165.06",42.95%,20.31%,,Hallazgos
+,France,7,"$924,316.93","$527,797.14","$2,208,000.00","$396,519.79",42.9%,17.96%,,"1)Dominio de Eficiencia en EE. UU.: Estados Unidos no solo genera el mayor volumen de ingresos ($3.35M), sino que lo hace con el Costo de Campañas más bajo ($1.92M) de toda la tabla, exceptuando a Canadá."
+,Canada,6,"$710,205.18","$392,325.91","$1,824,000.00","$317,879.27",44.76%,17.43%,,
+,,,,,,,,,,"2)Inconsistencia en el Gasto de Australia: Australia tiene el segundo ingreso más alto, pero su gasto en campañas ($2.15M) supera por mucho al de EE. UU., lo que castiga su rentabilidad final."
+,¿Cuál es la diferencia entre Margen y ROI?,,,,,,,,,
+,"1)Margen (Margen_pct)
+Mide la rentabilidad del producto después de sus costos de producción.
+
+Qué evalúa: La relación entre el precio de venta y lo que costó fabricar o adquirir el producto (Ingresos - Costos).
+
+En la tabla: Vemos que es muy estable en todos los países (oscila entre el 41.75% y el 44.76%). Esto indica que el costo del producto es consistente a nivel global.
+
+2) ROI (ROI_pct)
+Mide la rentabilidad de la inversión en marketing.
+
+Qué evalúa: Cuánto beneficio se obtiene por cada dólar gastado específicamente en publicidad (Beneficio Bruto / Costo Campañas).
+
+En la tabla: Es muy volátil y varía según el país. Mientras que en United States es del 75.75%, en Canada cae al 17.43%.",,,,,,,,,"3)Margen estable vs. ROI volátil: Mientras que el Margen Bruto se mantiene casi idéntico en todos los países (entre 41% y 44%), el ROI varía drásticamente (del 75% al 17%), lo que indica que el problema no es el costo del producto, sino el costo de adquisición (campañas)."
+,¿Por qué el ROI en Estados Unidos es tan alto comparado con otros países?,,,,,,,,,
+,"1)El ROI es excepcionalmente alto (75.75%) porque es el país con la mejor relación ""Ingreso por dólar invertido"".
+
+En EE. UU., por cada $1 invertido en campañas, generas $1.74 de ingresos.
+
+En Reino Unido, por cada $1 invertido, solo generas $0.51 de ingresos. Esta eficiencia puede deberse a un mercado más maduro, una mejor segmentación o el mensaje no es recibido de la forma esperada.",,,,,,,,,Implicación
+,"Si aumentáramos el gasto de campañas en un 50%, ¿qué pasaría con el ROI?",,,,,,,,,1)Saturación o Ineficiencia en Europa: Países como Reino Unido y Alemania tienen los costos de campaña más altos ($2.3M y $2.2M) para generar ingresos significativamente menores. Se requiere una auditoría de la estrategia publicitaria en estos mercados.
+,"1)Impacto directo: El denominador de la fórmula del ROI crece. Para mantener el ROI actual en EE. UU. aumentando el gasto un 50%, los ingresos deberían subir también aproximadamente un 50%. Si los ingresos suben menos que eso, tu ROI caerá, aunque el Beneficio Bruto total pueda aumentar.",,,,,,,,,
+,,,,,,,,,,"2)Potencial de Escalamiento en EE. UU.: Al ser el mercado con mejor retorno, es el candidato principal para recibir mayor presupuesto, ya que ha demostrado ser el más eficiente convirtiendo inversión en beneficio."
